@@ -5,137 +5,368 @@
 # classes
 
 #import
-import csv
+import json
 
 class Unit:
-    '''
+    """
     Base class for all units in the game.
-    '''
+    """
+
     def __init__(self):
+        self._identity = ''
+        self._base_type = ''
         self._name = ''
-        self._unit_type = ''
-        self._abilities = []
-        self._capacity = 0
-        self._faction_specific = False
-        self._faction = ''
+        self._subtitle = ''
+        self._source = ''
+        self._move_value = 0
+        self._capacity_used = 0.0
+        self._cost = 0
+        self._capacity_value = 0
 
-    # getters and setters with validation
-    def get_name(self):
-        return self._name
+        self._combat_hits_on = 0
+        self._combat_die_count = 0
 
-    def set_name(self, name):
-        if isinstance(name, str) and name:
-            self._name = name
+        self._upgrades_to_unit_id = ''
+        self._upgrades_from_unit_id = ''
+        self._required_tech_id = ''
+
+        self._afb_hits_on = 0
+        self._afb_die_count = 0
+
+        self._bombard_hits_on = 0
+        self._bombard_die_count = 0
+
+        self._sustain_damage = False
+        self._can_be_direct_hit = False
+
+        self._space_cannon_hits_on = 0
+        self._space_cannon_die_count = 0
+        self._planetary_shield = False
+        self._deep_space_cannon = False
+
+        self._is_structure = False
+        self._ground_force = False
+        self._is_ship = False
+
+        self._production_value = ''
+        self._basic_production = ''
+        self._disables_planetary_shield = False
+
+    @property
+    def id(self):
+        return self._identity
+
+    @id.setter
+    def id(self, id):
+        if isinstance(id, str) and id:
+            self._identity = id
         else:
-            raise ValueError("Name must be a non-empty string")
+            raise ValueError("ID must be a non-empty string")
 
-    def get_unit_type(self):
-        return self._unit_type
+    @property
+    def base_type(self):
+        return self._base_type
 
-    def set_unit_type(self, unit_type):
-        if isinstance(unit_type, str) and unit_type:
-            self._unit_type = unit_type
+    @base_type.setter
+    def base_type(self, base_type):
+        if isinstance(base_type, str) and base_type:
+            self._base_type = base_type
         else:
-            raise ValueError("Unit type must be a non-empty string")
+            raise ValueError("Base type must be a non-empty string")
 
-    def get_abilities(self):
-        return self._abilities
+    @property
+    def upgrades_to_unit_id(self):
+        return self._upgrades_to_unit_id
 
-    def set_abilities(self, abilities):
-        if isinstance(abilities, list):
-            self._abilities = abilities
+    @upgrades_to_unit_id.setter
+    def upgrades_to_unit_id(self, upgrades_to_unit_id):
+        if isinstance(upgrades_to_unit_id, str):
+            self._upgrades_to_unit_id = upgrades_to_unit_id
         else:
-            raise ValueError("Abilities must be a list")
+            raise ValueError("Upgrades to unit ID must be a string")
 
-    def get_capacity(self):
-        return self._capacity
+    @property
+    def source(self):
+        return self._source
 
-    def set_capacity(self, capacity):
-        if isinstance(capacity, int) and capacity >= 0:
-            self._capacity = capacity
+    @source.setter
+    def source(self, source):
+        if isinstance(source, str) and source:
+            self._source = source
         else:
-            raise ValueError("Capacity must be a non-negative integer")
+            raise ValueError("Source must be a non-empty string")
 
-    def get_faction_specific(self):
-        return self._faction_specific
+    @property
+    def move_value(self):
+        return self._move_value
 
-    def set_faction_specific(self, faction_specific):
-        if isinstance(faction_specific, bool):
-            self._faction_specific = faction_specific
+    @move_value.setter
+    def move_value(self, move_value):
+        if isinstance(move_value, int) and move_value >= 0:
+            self._move_value = move_value
         else:
-            raise ValueError("Faction specific must be a boolean")
+            raise ValueError("Move value must be a non-negative integer")
 
-class Structure(Unit):
-    '''
-    Base class for all structures in the game. Inherits from Unit.
-    '''
-    def __init__(self):
-        super().__init__()
-        self.name = ''
-        self.unit_type = 'Structure'
-        self.abilities = []
+    @property
+    def capacity_used(self):
+        return self._capacity_used
 
-
-class Ship(Unit):
-    '''
-    Base class for all ships in the game. Inherits from Unit.
-    '''
-    def __init__(self, name, unit_type, abilities, capacity, movement, hit_on, combat_dice_number, ship_type):
-        '''
-        :param name: Name of the unit in game.
-        :param unit_type: Type of the unit (e.g., "Ship").
-        :param abilities: A list of abilities the unit has.
-        :param capacity: How many units it can carry.
-        :param movement: How many systems it can move.
-        :param hit_on: What die number it hits on.
-        :param combat_dice_number: How many dice it rolls in combat.
-        :param ship_type: Further classification of the ship unit type (e.g., "Fighter", "Capital ship").
-        '''
-        super().__init__()
-        self.name = name
-        self.unit_type = unit_type
-        self.abilities = abilities
-        self.capacity = capacity
-        self._movement = movement
-        self._hit_on = hit_on
-        self._combat_dice_number = combat_dice_number
-        self._ship_type = ship_type
-
-    # getters and setters with validation
-    def get_movement(self):
-        return self._movement
-
-    def set_movement(self, movement):
-        if isinstance(movement, int) and movement >= 0:
-            self._movement = movement
+    @capacity_used.setter
+    def capacity_used(self, capacity_used):
+        if isinstance(capacity_used, float) and capacity_used >= 0:
+            self._capacity_used = capacity_used
         else:
-            raise ValueError("Movement must be a non-negative integer")
+            raise ValueError("Capacity used must be a non-negative float")
 
-    def get_hit_on(self):
-        return self._hit_on
+    @property
+    def combat_hits_on(self):
+        return self._combat_hits_on
 
-    def set_hit_on(self, hit_on):
-        if isinstance(hit_on, int) and hit_on >= 0:
-            self._hit_on = hit_on
+    @combat_hits_on.setter
+    def combat_hits_on(self, combat_hits_on):
+        if isinstance(combat_hits_on, int) and combat_hits_on >= 0:
+            self._combat_hits_on = combat_hits_on
         else:
-            raise ValueError("Hit on must be a non-negative integer")
+            raise ValueError("Combat hits on must be a non-negative integer")
 
-    def get_combat_dice_number(self):
-        return self._combat_dice_number
+    @property
+    def combat_die_count(self):
+        return self._combat_die_count
 
-    def set_combat_dice_number(self, combat_dice_number):
-        if isinstance(combat_dice_number, int) and combat_dice_number >= 0:
-            self._combat_dice_number = combat_dice_number
+    @combat_die_count.setter
+    def combat_die_count(self, combat_die_count):
+        if isinstance(combat_die_count, int) and combat_die_count >= 0:
+            self._combat_die_count = combat_die_count
         else:
-            raise ValueError("Combat dice number must be a non-negative integer")
+            raise ValueError("Combat die count must be a non-negative integer")
 
-    def get_ship_type(self):
-        return self._ship_type
+    @property
+    def is_ship(self):
+        return self._is_ship
 
-    def set_ship_type(self, ship_type):
-        if isinstance(ship_type, str) and ship_type:
-            self._ship_type = ship_type
+    @is_ship.setter
+    def is_ship(self, is_ship):
+        if isinstance(is_ship, bool):
+            self._is_ship = is_ship
         else:
-            raise ValueError("Ship type must be a non-empty string")
+            raise ValueError("Is ship must be a boolean")
 
-with open('data/ships.csv') as csvfile:
+    @property
+    def subtitle(self):
+        return self._subtitle
+
+    @subtitle.setter
+    def subtitle(self, subtitle):
+        if isinstance(subtitle, str):
+            self._subtitle = subtitle
+        else:
+            raise ValueError("Subtitle must be a string")
+
+    @property
+    def upgrades_from_unit_id(self):
+        return self._upgrades_from_unit_id
+
+    @upgrades_from_unit_id.setter
+    def upgrades_from_unit_id(self, upgrades_from_unit_id):
+        if isinstance(upgrades_from_unit_id, str):
+            self._upgrades_from_unit_id = upgrades_from_unit_id
+        else:
+            raise ValueError("Upgrades from unit ID must be a string")
+
+    @property
+    def required_tech_id(self):
+        return self._required_tech_id
+
+    @required_tech_id.setter
+    def required_tech_id(self, required_tech_id):
+        if isinstance(required_tech_id, str):
+            self._required_tech_id = required_tech_id
+        else:
+            raise ValueError("Required tech ID must be a string")
+
+    @property
+    def capacity_value(self):
+        return self._capacity_value
+
+    @capacity_value.setter
+    def capacity_value(self, capacity_value):
+        if isinstance(capacity_value, int) and capacity_value >= 0:
+            self._capacity_value = capacity_value
+        else:
+            raise ValueError("Capacity value must be a non-negative integer")
+
+    @property
+    def afb_hits_on(self):
+        return self._afb_hits_on
+
+    @afb_hits_on.setter
+    def afb_hits_on(self, afb_hits_on):
+        if isinstance(afb_hits_on, int) and afb_hits_on >= 0:
+            self._afb_hits_on = afb_hits_on
+        else:
+            raise ValueError("AFB hits on must be a non-negative integer")
+
+    @property
+    def afb_die_count(self):
+        return self._afb_die_count
+
+    @afb_die_count.setter
+    def afb_die_count(self, afb_die_count):
+        if isinstance(afb_die_count, int) and afb_die_count >= 0:
+            self._afb_die_count = afb_die_count
+        else:
+            raise ValueError("AFB die count must be a non-negative integer")
+
+    @property
+    def bombard_hits_on(self):
+        return self._bombard_hits_on
+
+    @bombard_hits_on.setter
+    def bombard_hits_on(self, bombard_hits_on):
+        if isinstance(bombard_hits_on, int) and bombard_hits_on >= 0:
+            self._bombard_hits_on = bombard_hits_on
+        else:
+            raise ValueError("Bombard hits on must be a non-negative integer")
+
+    @property
+    def bombard_die_count(self):
+        return self._bombard_die_count
+
+    @bombard_die_count.setter
+    def bombard_die_count(self, bombard_die_count):
+        if isinstance(bombard_die_count, int) and bombard_die_count >= 0:
+            self._bombard_die_count = bombard_die_count
+        else:
+            raise ValueError("Bombard die count must be a non-negative integer")
+
+    @property
+    def sustain_damage(self):
+        return self._sustain_damage
+
+    @sustain_damage.setter
+    def sustain_damage(self, sustain_damage):
+        if isinstance(sustain_damage, bool):
+            self._sustain_damage = sustain_damage
+        else:
+            raise ValueError("Sustain damage must be a boolean")
+
+    @property
+    def can_be_direct_hit(self):
+        return self._can_be_direct_hit
+
+    @can_be_direct_hit.setter
+    def can_be_direct_hit(self, can_be_direct_hit):
+        if isinstance(can_be_direct_hit, bool):
+            self._can_be_direct_hit = can_be_direct_hit
+        else:
+            raise ValueError("Can be direct hit must be a boolean")
+
+    @property
+    def ability(self):
+        return self._ability
+
+    @ability.setter
+    def ability(self, ability):
+        if isinstance(ability, str):
+            self._ability = ability
+        else:
+            raise ValueError("Ability must be a string")
+
+    @property
+    def is_ground_force(self):
+        return self._is_ground_force
+
+    @is_ground_force.setter
+    def is_ground_force(self, is_ground_force):
+        if isinstance(is_ground_force, bool):
+            self._is_ground_force = is_ground_force
+        else:
+            raise ValueError("Is ground force must be a boolean")
+
+    @property
+    def space_cannon_hits_on(self):
+        return self._space_cannon_hits_on
+
+    @space_cannon_hits_on.setter
+    def space_cannon_hits_on(self, space_cannon_hits_on):
+        if isinstance(space_cannon_hits_on, int) and space_cannon_hits_on >= 0:
+            self._space_cannon_hits_on = space_cannon_hits_on
+        else:
+            raise ValueError("Space cannon hits on must be a non-negative integer")
+
+    @property
+    def space_cannon_die_count(self):
+        return self._space_cannon_die_count
+
+    @space_cannon_die_count.setter
+    def space_cannon_die_count(self, space_cannon_die_count):
+        if isinstance(space_cannon_die_count, int) and space_cannon_die_count >= 0:
+            self._space_cannon_die_count = space_cannon_die_count
+        else:
+            raise ValueError("Space cannon die count must be a non-negative integer")
+
+    @property
+    def planetary_shield(self):
+        return self._planetary_shield
+
+    @planetary_shield.setter
+    def planetary_shield(self, planetary_shield):
+        if isinstance(planetary_shield, bool):
+            self._planetary_shield = planetary_shield
+        else:
+            raise ValueError("Planetary shield must be a boolean")
+
+    @property
+    def is_structure(self):
+        return self._is_structure
+
+    @is_structure.setter
+    def is_structure(self, is_structure):
+        if isinstance(is_structure, bool):
+            self._is_structure = is_structure
+        else:
+            raise ValueError("Is structure must be a boolean")
+
+    @property
+    def deep_space_cannon(self):
+        return self._deep_space_cannon
+
+    @deep_space_cannon.setter
+    def deep_space_cannon(self, deep_space_cannon):
+        if isinstance(deep_space_cannon, bool):
+            self._deep_space_cannon = deep_space_cannon
+        else:
+            raise ValueError("Deep space cannon must be a boolean")
+
+    @property
+    def production_value(self):
+        return self._production_value
+
+    @production_value.setter
+    def production_value(self, production_value):
+        if isinstance(production_value, str):
+            self._production_value = production_value
+        else:
+            raise ValueError("Production value must be a string")
+
+    @property
+    def basic_production(self):
+        return self._basic_production
+
+    @basic_production.setter
+    def basic_production(self, basic_production):
+        if isinstance(basic_production, str):
+            self._basic_production = basic_production
+        else:
+            raise ValueError("Basic production must be a string")
+
+    @property
+    def disables_planetary_shield(self):
+        return self._disables_planetary_shield
+
+    @disables_planetary_shield.setter
+    def disables_planetary_shield(self, disables_planetary_shield):
+        if isinstance(disables_planetary_shield, bool):
+            self._disables_planetary_shield = disables_planetary_shield
+        else:
+            raise ValueError("Disables planetary shield must be a boolean")

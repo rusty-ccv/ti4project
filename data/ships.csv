@@ -1,3 +1,12 @@
-Name,Type,Abilities,Capacity,Movement,Hit On,Combat Dice Number,Ship Type,Faction
-fighter,ship,none,0,0,9,1,fighter,all
-fighter II,ship,move,0,2,8,1,fighter,all
+Name,Type,Abilities,Cost,Hit on,Combat Dice Number,Movement,Capacity,Ship Type,Faction specific,Faction, Upgrade Requirements
+Carrier,ship,none,3,9,1,1,4,capital,no,all
+Carrier 2,ship,none,3,9,1,2,6,capital,no,all,blue 2
+Advanced Carrier,ship,none,3,9,1,2,6,capital,yes,Federation of Sol
+Advanced Carrier 2,ship,Sustain Damage,3,9,1,2,8,capital,yes,Federation of Sol
+Cruiser,ship,none,2,7,1,2,0,capital,no,all
+Cruiser 2,ship,none,2,6,1,3,1,capital,no,all,green 1 yellow 1 red 1
+Saturn Engine,ship,none,2,7,1,2,1,capital,yes,Titans of Ul
+Saturn Engine 2,ship,none,2,6,1,3,2,capital,yes,Titans of Ul
+Destroyer,ship,Anti-Fighter Barrage,1,9,1,2,0,capital,no,all
+Destroyer 2,ship,Anti-Fighter Barrage 2,1,8,1,2,1,capital,no,all,green 1 yellow 1 red 1
+

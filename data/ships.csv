@@ -1,0 +1,3 @@
+Name,Type,Abilities,Capacity,Movement,Hit On,Combat Dice Number,Ship Type,Faction
+fighter,ship,none,0,0,9,1,fighter,all
+fighter II,ship,move,0,2,8,1,fighter,all
